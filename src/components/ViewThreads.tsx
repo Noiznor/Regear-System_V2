@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Users, Package, Eye, Shield, Sword, Heart, Star, Trash2, AlertTriangle } from 'lucide-react';
+import { Calendar, Users, Package, Eye, Shield, Sword, Heart, Star, Trash2, AlertTriangle, Copy, Check } from 'lucide-react';
 import { Thread } from '../types';
 import { calculateItemTotals } from '../utils/itemCalculator';
 import { deleteThread, loadThreads } from '../utils/storage';
@@ -13,6 +13,7 @@ interface ViewThreadsProps {
 
 export const ViewThreads: React.FC<ViewThreadsProps> = ({ threads, onSelectThread, onThreadDeleted, onThreadsUpdated }) => {
   const [deletingThread, setDeletingThread] = useState<string | null>(null);
+  const [copiedThread, setCopiedThread] = useState<string | null>(null);
 
   const roleIcons = {
     tank: Shield,
@@ -37,6 +38,88 @@ export const ViewThreads: React.FC<ViewThreadsProps> = ({ threads, onSelectThrea
     setDeletingThread(null);
   };
 
+  const formatThreadForCopy = (thread: Thread): string => {
+    const date = new Date(thread.utcDate);
+    const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
+    const formattedTime = `${date.getUTCHours()} UTC`;
+    
+    let output = `${formattedDate} | CASTLE | ${formattedTime}\n\n`;
+    
+    // Process each role
+    const roleOrder = ['tank', 'support', 'healer', 'dps'] as const;
+    
+    roleOrder.forEach(role => {
+      const roleName = role.charAt(0).toUpperCase() + role.slice(1);
+      output += `${roleName}:\n\n`;
+      
+      const players = thread.roles[role];
+      if (players.length > 0) {
+        players.forEach(player => {
+          const items: string[] = [];
+          
+          // Add items based on quantity
+          for (let i = 0; i < player.quantity; i++) {
+            if (player.selectedGear.weapon) {
+              items.push(player.selectedGear.weapon.toLowerCase());
+            }
+            if (player.selectedGear.offhand) {
+              items.push(player.selectedGear.offhand.toLowerCase());
+            }
+            if (player.selectedGear.headgear) {
+              items.push(player.selectedGear.headgear.toLowerCase());
+            }
+            if (player.selectedGear.armor) {
+              items.push(player.selectedGear.armor.toLowerCase());
+            }
+            if (player.selectedGear.boots) {
+              items.push(player.selectedGear.boots.toLowerCase());
+            }
+          }
+          
+          // Count items and format
+          const itemCounts: { [key: string]: number } = {};
+          items.forEach(item => {
+            itemCounts[item] = (itemCounts[item] || 0) + 1;
+          });
+          
+          const itemList = Object.entries(itemCounts)
+            .map(([item, count]) => `${count} ${item}`)
+            .join(', ');
+          
+          if (itemList) {
+            output += `${player.ign.toLowerCase()} - ${itemList}\n`;
+          }
+        });
+      }
+      
+      output += '\n';
+    });
+    
+    output += '------------------------------------------------------';
+    
+    return output;
+  };
+
+  const handleCopyThread = async (thread: Thread) => {
+    const formattedText = formatThreadForCopy(thread);
+    
+    try {
+      await navigator.clipboard.writeText(formattedText);
+      setCopiedThread(thread.id);
+      setTimeout(() => setCopiedThread(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = formattedText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopiedThread(thread.id);
+      setTimeout(() => setCopiedThread(null), 2000);
+    }
+  };
   if (threads.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -193,6 +276,26 @@ export const ViewThreads: React.FC<ViewThreadsProps> = ({ threads, onSelectThrea
                       View Details
                     </button>
 
+                    <button
+                      onClick={() => handleCopyThread(thread)}
+                      className={`px-10 py-4 ${
+                        copiedThread === thread.id
+                          ? 'bg-gradient-to-r from-green-500 to-green-600'
+                          : 'bg-gradient-to-r from-purple-500 to-purple-600'
+                      } text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center text-lg`}
+                    >
+                      {copiedThread === thread.id ? (
+                        <>
+                          <Check className="mr-3 h-6 w-6" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="mr-3 h-6 w-6" />
+                          Copy Thread
+                        </>
+                      )}
+                    </button>
                     <button
                       onClick={() => setDeletingThread(thread.id)}
                       className="px-10 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center text-lg"
