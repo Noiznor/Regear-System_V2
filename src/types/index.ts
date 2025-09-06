@@ -16,6 +16,7 @@ export interface Player {
 export interface Thread {
   id: string;
   utcDate: string;
+  contentName: string;
   roles: {
     tank: Player[];
     dps: Player[];
