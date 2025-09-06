@@ -12,12 +12,14 @@ interface CreateThreadProps {
 
 export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existingThread }) => {
   const [utcDate, setUtcDate] = useState(existingThread?.utcDate || '');
+  const [contentName, setContentName] = useState(existingThread?.contentName || 'CASTLE');
   const [currentRole, setCurrentRole] = useState<RoleType | null>(null);
   const [playerCount, setPlayerCount] = useState<number>(1);
   const [currentPlayers, setCurrentPlayers] = useState<Player[]>([]);
   const [thread, setThread] = useState<Thread>(existingThread || {
     id: generateId(),
     utcDate: '',
+    contentName: 'CASTLE',
     roles: { tank: [], dps: [], support: [], healer: [] },
     createdAt: new Date(),
     lastModified: new Date()
@@ -100,6 +102,7 @@ export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existi
       setThread(prev => ({
         ...prev,
         utcDate,
+        contentName,
         roles: {
           ...prev.roles,
           [currentRole]: [...prev.roles[currentRole], ...currentPlayers]
@@ -124,16 +127,18 @@ export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existi
   };
 
   const saveThread = () => {
-    if (utcDate && Object.values(thread.roles).some(players => players.length > 0)) {
-      onSaveThread({ ...thread, utcDate });
+    if (utcDate && contentName && Object.values(thread.roles).some(players => players.length > 0)) {
+      onSaveThread({ ...thread, utcDate, contentName });
       setThread({
         id: generateId(),
         utcDate: '',
+        contentName: 'CASTLE',
         roles: { tank: [], dps: [], support: [], healer: [] },
         createdAt: new Date(),
         lastModified: new Date()
       });
       setUtcDate('');
+      setContentName('CASTLE');
       setCurrentPlayers([]);
       setCurrentRole(null);
       setPlayerCount(1);
@@ -190,6 +195,20 @@ export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existi
               value={utcDate}
               onChange={(e) => setUtcDate(e.target.value)}
               className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 text-lg text-center font-semibold bg-white/90"
+              required
+            />
+          </div>
+          
+          <div className="max-w-md mx-auto mt-8">
+            <label className="block text-lg font-bold text-gray-800 mb-4 text-center">
+              Content Name
+            </label>
+            <input
+              type="text"
+              value={contentName}
+              onChange={(e) => setContentName(e.target.value)}
+              className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 text-lg text-center font-semibold bg-white/90"
+              placeholder="e.g., CASTLE, DUNGEON, RAID"
               required
             />
           </div>
@@ -552,7 +571,7 @@ export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existi
               
               <button
                 onClick={saveThread}
-                disabled={!utcDate || !Object.values(thread.roles).some(players => players.length > 0)}
+                disabled={!utcDate || !contentName || !Object.values(thread.roles).some(players => players.length > 0)}
                 className="px-10 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 flex items-center text-lg"
               >
                 <Save className="mr-3 h-6 w-6" />
