@@ -14,6 +14,7 @@ export const loadThreads = (): Thread[] => {
     const threads = JSON.parse(stored);
     return threads.map((thread: any) => ({
       ...thread,
+      contentName: thread.contentName || 'CASTLE',
       createdAt: new Date(thread.createdAt),
       lastModified: new Date(thread.lastModified),
       roles: {
