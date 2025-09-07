@@ -220,8 +220,7 @@ export const healerPresets: Record<string, GearPreset> = {
     boots: 'Cleric Sandals'
   },
   'Nature': {
-    weapon: 'Nature',
-    offhand: 'Wildstaff',
+    weapon: 'Wildstaff',
     headgear: 'Assassin Hood',
     armor: 'Purify Robe',
     boots: 'Cleric Sandals'
