@@ -87,8 +87,12 @@ export const ThreadDetails: React.FC<ThreadDetailsProps> = ({ thread, onBack, on
         {/* Thread Header */}
         <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-12 border border-white/20">
           <div className="text-center mb-10">
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 mx-auto mb-8 w-24 h-24 flex items-center justify-center shadow-2xl">
-              <Calendar className="h-12 w-12 text-white" />
+            <div className="rounded-3xl p-6 mx-auto mb-8 w-24 h-24 flex items-center justify-center shadow-2xl bg-white">
+              <img 
+                src="/mahaLogo.png" 
+                alt="Maharlika Logo" 
+                className="h-12 w-12 object-contain"
+              />
             </div>
             <h1 className="text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Regear Thread Details
