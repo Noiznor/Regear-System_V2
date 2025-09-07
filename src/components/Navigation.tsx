@@ -21,8 +21,12 @@ export const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChang
             onClick={() => onViewChange('home')}
             className="flex items-center space-x-3 group"
           >
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-3 shadow-lg group-hover:scale-110 transition-transform duration-200">
-              <Shield className="h-6 w-6 text-white" />
+            <div className="rounded-2xl p-2 shadow-lg group-hover:scale-110 transition-transform duration-200 bg-white">
+              <img 
+                src="/mahaLogo.png" 
+                alt="Maharlika Logo" 
+                className="h-10 w-10 object-contain"
+              />
             </div>
             <div className="text-left">
               <div className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
