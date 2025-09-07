@@ -176,8 +176,12 @@ export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existi
         {/* UTC Date Input */}
         <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border border-white/20">
           <div className="flex items-center justify-center mb-8">
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-6 shadow-2xl">
-              <Calendar className="h-10 w-10 text-white" />
+            <div className="rounded-3xl p-4 shadow-2xl bg-white">
+              <img 
+                src="/mahaLogo.png" 
+                alt="Maharlika Logo" 
+                className="h-12 w-12 object-contain"
+              />
             </div>
           </div>
           
