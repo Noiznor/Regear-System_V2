@@ -1,5 +1,32 @@
 import { GearPreset } from '../types';
 
+const CUSTOM_PRESETS_KEY = 'custom_gear_presets';
+
+// Load custom presets from localStorage
+const loadCustomPresetsFromStorage = (): Record<string, Record<string, GearPreset>> => {
+  const stored = localStorage.getItem(CUSTOM_PRESETS_KEY);
+  if (!stored) return {};
+  
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return {};
+  }
+};
+
+// Save custom presets to localStorage
+export const saveCustomPresets = (role: string, presets: Record<string, GearPreset>): void => {
+  const allCustomPresets = loadCustomPresetsFromStorage();
+  allCustomPresets[role] = presets;
+  localStorage.setItem(CUSTOM_PRESETS_KEY, JSON.stringify(allCustomPresets));
+};
+
+// Load custom presets for a specific role
+export const loadCustomPresets = (role: string): Record<string, GearPreset> => {
+  const allCustomPresets = loadCustomPresetsFromStorage();
+  return allCustomPresets[role] || {};
+};
+
 export const tankPresets: Record<string, GearPreset> = {
   'Main Tank': {
     weapon: 'Earthrune',
@@ -235,6 +262,7 @@ export const getAllPresets = () => ({
 });
 
 export const getPresetsByRole = (role: string) => {
+  const defaultPresets = (() => {
   switch (role) {
     case 'tank':
       return tankPresets;
@@ -247,4 +275,9 @@ export const getPresetsByRole = (role: string) => {
     default:
       return {};
   }
+  })();
+  
+  // Merge default presets with custom presets
+  const customPresets = loadCustomPresets(role);
+  return { ...defaultPresets, ...customPresets };
 };
