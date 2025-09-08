@@ -1,16 +1,17 @@
 import React from 'react';
-import { Plus, Eye, Edit, Shield } from 'lucide-react';
+import { Plus, Eye, Edit, Shield, Settings } from 'lucide-react';
 
 interface NavigationProps {
-  currentView: 'home' | 'create' | 'view' | 'modify';
-  onViewChange: (view: 'home' | 'create' | 'view' | 'modify') => void;
+  currentView: 'home' | 'create' | 'view' | 'modify' | 'presets';
+  onViewChange: (view: 'home' | 'create' | 'view' | 'modify' | 'presets') => void;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange }) => {
   const navItems = [
     { id: 'create', label: 'Create Thread', icon: Plus, color: 'text-blue-600 hover:text-blue-700' },
     { id: 'view', label: 'View Threads', icon: Eye, color: 'text-green-600 hover:text-green-700' },
-    { id: 'modify', label: 'Modify Threads', icon: Edit, color: 'text-purple-600 hover:text-purple-700' }
+    { id: 'modify', label: 'Modify Threads', icon: Edit, color: 'text-purple-600 hover:text-purple-700' },
+    { id: 'presets', label: 'Manage Presets', icon: Settings, color: 'text-orange-600 hover:text-orange-700' }
   ];
 
   return (
@@ -30,7 +31,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChang
             </div>
             <div className="text-left">
               <div className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                Maharlika Regear System
+                Maharlika System
               </div>
               <div className="text-sm text-gray-500">Guild Management</div>
             </div>
