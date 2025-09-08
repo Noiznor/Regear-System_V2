@@ -4,10 +4,11 @@ import { Home } from './components/Home';
 import { CreateThread } from './components/CreateThread';
 import { ViewThreads } from './components/ViewThreads';
 import { ThreadDetails } from './components/ThreadDetails';
+import { ManagePresets } from './components/ManagePresets';
 import { Thread } from './types';
 import { saveThreads, loadThreads } from './utils/storage';
 
-type View = 'home' | 'create' | 'view' | 'modify' | 'details';
+type View = 'home' | 'create' | 'view' | 'modify' | 'details' | 'presets';
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -78,6 +79,8 @@ function App() {
             onEdit={() => handleEditThread(selectedThread)}
           />
         ) : null;
+      case 'presets':
+        return <ManagePresets />;
       default:
         return <Home />;
     }
