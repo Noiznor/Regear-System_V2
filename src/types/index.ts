@@ -29,6 +29,16 @@ export interface Thread {
 
 export type RoleType = 'tank' | 'dps' | 'support' | 'healer';
 
+export type MemberRole = 'tank' | 'dps' | 'support' | 'healer' | 'villager';
+
+export interface MemberData {
+  name: string;
+  id: string;
+  guildName: string;
+  role: MemberRole;
+  tier: number;
+}
+
 export interface ItemCount {
   [itemName: string]: number;
 }
