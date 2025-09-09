@@ -4,6 +4,8 @@ import { Thread, RoleType, Player, GearPreset } from '../types';
 import { getPresetsByRole } from '../data/gearPresets';
 import { getTierLimitedGear } from '../utils/itemCalculator';
 import { generateId } from '../utils/storage';
+import { useMembers } from '../utils/memberData';
+import { AutocompleteInput } from './AutocompleteInput';
 
 interface CreateThreadProps {
   onSaveThread: (thread: Thread) => void;
@@ -11,6 +13,7 @@ interface CreateThreadProps {
 }
 
 export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existingThread }) => {
+  const { members, loading: membersLoading } = useMembers();
   const [utcDate, setUtcDate] = useState(existingThread?.utcDate || '');
   const [contentName, setContentName] = useState(existingThread?.contentName || 'CASTLE');
   const [currentRole, setCurrentRole] = useState<RoleType | null>(null);
@@ -339,13 +342,13 @@ export const CreateThread: React.FC<CreateThreadProps> = ({ onSaveThread, existi
                       <label className="block text-sm font-bold text-gray-700 mb-3">
                         IGN (In-Game Name)
                       </label>
-                      <input
-                        type="text"
+                      <AutocompleteInput
                         value={player.ign}
-                        onChange={(e) => updatePlayer(index, 'ign', e.target.value)}
+                        onChange={(value) => updatePlayer(index, 'ign', value)}
+                        members={members}
+                        placeholder={membersLoading ? "Loading members..." : "Enter player name"}
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 bg-white/90"
-                        placeholder="Enter player name"
-                        required
+                        disabled={membersLoading}
                       />
                     </div>
                     
