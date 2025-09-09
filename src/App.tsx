@@ -5,10 +5,11 @@ import { CreateThread } from './components/CreateThread';
 import { ViewThreads } from './components/ViewThreads';
 import { ThreadDetails } from './components/ThreadDetails';
 import { ManagePresets } from './components/ManagePresets';
+import { ViewMembers } from './components/ViewMembers';
 import { Thread } from './types';
 import { saveThreads, loadThreads } from './utils/storage';
 
-type View = 'home' | 'create' | 'view' | 'modify' | 'details' | 'presets';
+type View = 'home' | 'create' | 'view' | 'modify' | 'details' | 'presets' | 'members';
 
 function App() {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -81,6 +82,8 @@ function App() {
         ) : null;
       case 'presets':
         return <ManagePresets />;
+      case 'members':
+        return <ViewMembers />;
       default:
         return <Home />;
     }
