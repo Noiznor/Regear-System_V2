@@ -29,7 +29,7 @@ export interface Thread {
 
 export type RoleType = 'tank' | 'dps' | 'support' | 'healer';
 
-export type MemberRole = 'tank' | 'dps' | 'support' | 'healer' | 'villager';
+export type MemberRole = 'tank' | 'dps' | 'support' | 'healer' | 'villager' | 'bsquad';
 
 export interface MemberData {
   name: string;
