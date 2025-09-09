@@ -2,8 +2,8 @@ import React from 'react';
 import { Plus, Eye, Edit, Shield, Settings } from 'lucide-react';
 
 interface NavigationProps {
-  currentView: 'home' | 'create' | 'view' | 'modify' | 'presets';
-  onViewChange: (view: 'home' | 'create' | 'view' | 'modify' | 'presets') => void;
+  currentView: 'home' | 'create' | 'view' | 'modify' | 'presets' | 'members';
+  onViewChange: (view: 'home' | 'create' | 'view' | 'modify' | 'presets' | 'members') => void;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange }) => {
@@ -11,7 +11,8 @@ export const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChang
     { id: 'create', label: 'Create Thread', icon: Plus, color: 'text-blue-600 hover:text-blue-700' },
     { id: 'view', label: 'View Threads', icon: Eye, color: 'text-green-600 hover:text-green-700' },
     { id: 'modify', label: 'Modify Threads', icon: Edit, color: 'text-purple-600 hover:text-purple-700' },
-    { id: 'presets', label: 'Manage Presets', icon: Settings, color: 'text-orange-600 hover:text-orange-700' }
+    { id: 'presets', label: 'Manage Presets', icon: Settings, color: 'text-orange-600 hover:text-orange-700' },
+    { id: 'members', label: 'View Members', icon: Shield, color: 'text-indigo-600 hover:text-indigo-700' }
   ];
 
   return (
