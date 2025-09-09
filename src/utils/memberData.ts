@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { MemberData, MemberRole } from '../types';
 
+// API base URL - change this to your server URL in production
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '' // Use relative URLs in production
+  : 'http://localhost:3001'; // Development server
+
+// Check if we should use API or localStorage
+const USE_API = process.env.NODE_ENV === 'production' || window.location.port === '3001';
+
 const MEMBER_DATA_KEY = 'maharlika_member_data';
 
 let cachedMembers: MemberData[] | null = null;
@@ -18,7 +26,40 @@ const loadMemberDataFromStorage = (): Record<string, { role: MemberRole; tier: n
 };
 
 // Save member data to localStorage
-export const saveMemberData = (memberName: string, role: MemberRole, tier: number): void => {
+export const saveMemberData = async (memberName: string, role: MemberRole, tier: number): Promise<void> => {
+  if (USE_API) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/members/${encodeURIComponent(memberName)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ role, tier }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update member on server');
+      }
+      
+      // Update cached members if they exist
+      if (cachedMembers) {
+        const memberIndex = cachedMembers.findIndex(m => m.name === memberName);
+        if (memberIndex !== -1) {
+          cachedMembers[memberIndex] = { ...cachedMembers[memberIndex], role, tier };
+        }
+      }
+    } catch (error) {
+      console.error('Error updating member via API:', error);
+      // Fallback to localStorage
+      saveMemberDataLocally(memberName, role, tier);
+    }
+  } else {
+    saveMemberDataLocally(memberName, role, tier);
+  }
+};
+
+// Local storage fallback
+const saveMemberDataLocally = (memberName: string, role: MemberRole, tier: number): void => {
   const allMemberData = loadMemberDataFromStorage();
   allMemberData[memberName] = { role, tier };
   localStorage.setItem(MEMBER_DATA_KEY, JSON.stringify(allMemberData));
@@ -37,6 +78,21 @@ export const loadMembers = async (): Promise<MemberData[]> => {
     return cachedMembers;
   }
 
+  // Try to load from API first
+  if (USE_API) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/members`);
+      if (response.ok) {
+        const members = await response.json();
+        cachedMembers = members.sort((a: MemberData, b: MemberData) => a.name.localeCompare(b.name));
+        return cachedMembers;
+      }
+    } catch (error) {
+      console.error('Error loading members from API, falling back to CSV:', error);
+    }
+  }
+
+  // Fallback to CSV loading
   try {
     const response = await fetch('/members.csv');
     const csvText = await response.text();
@@ -86,7 +142,14 @@ export const useMembers = () => {
   }, []);
 
   const updateMember = (memberName: string, role: MemberRole, tier: number) => {
-    saveMemberData(memberName, role, tier);
+    saveMemberData(memberName, role, tier).then(() => {
+      // Update local state after successful save
+    }).catch(error => {
+      console.error('Failed to update member:', error);
+      alert('Failed to update member. Please try again.');
+    });
+    
+    // Optimistically update the UI
     setMembers(prevMembers => 
       prevMembers.map(member => 
         member.name === memberName 
