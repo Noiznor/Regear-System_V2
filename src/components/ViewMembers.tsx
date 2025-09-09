@@ -47,6 +47,13 @@ export const ViewMembers: React.FC = () => {
       bg: 'bg-gray-50',
       border: 'border-gray-200',
       text: 'text-gray-800'
+    },
+    bsquad: { 
+      icon: Shield, 
+      gradient: 'from-purple-500 to-purple-600',
+      bg: 'bg-purple-50',
+      border: 'border-purple-200',
+      text: 'text-purple-800'
     }
   };
 
@@ -84,7 +91,8 @@ export const ViewMembers: React.FC = () => {
       dps: 0,
       support: 0,
       healer: 0,
-      villager: 0
+      villager: 0,
+      bsquad: 0
     };
     
     members.forEach(member => {
@@ -142,7 +150,7 @@ export const ViewMembers: React.FC = () => {
             {/* Role Stats */}
             <div>
               <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">Role Distribution</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(roleStats).map(([role, count]) => {
                   const config = roleConfig[role as MemberRole];
                   const Icon = config.icon;
@@ -212,6 +220,7 @@ export const ViewMembers: React.FC = () => {
                 <option value="support">Support</option>
                 <option value="healer">Healer</option>
                 <option value="villager">Villager</option>
+                <option value="bsquad">BSquad</option>
               </select>
             </div>
 
@@ -295,6 +304,8 @@ export const ViewMembers: React.FC = () => {
                                 <option value="support">Support</option>
                                 <option value="healer">Healer</option>
                                 <option value="villager">Villager</option>
+                                <option value="bsquad">BSquad</option>
+                                <option value="bsquad">BSquad</option>
                               </select>
                             ) : (
                               <div className="flex items-center">
