@@ -305,7 +305,6 @@ export const ViewMembers: React.FC = () => {
                                 <option value="healer">Healer</option>
                                 <option value="villager">Villager</option>
                                 <option value="bsquad">BSquad</option>
-                                <option value="bsquad">BSquad</option>
                               </select>
                             ) : (
                               <div className="flex items-center">
